@@ -4,12 +4,32 @@ import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.m
 const menuToggle = document.querySelector("#menuToggle");
 const navigation = document.querySelector("#navigation");
 
+const closeMenu = () => {
+  navigation.classList.remove("open");
+  menuToggle.setAttribute("aria-expanded", "false");
+};
+
 menuToggle.addEventListener("click", () => {
-  navigation.classList.toggle("open");
+  const isOpen = navigation.classList.toggle("open");
+  menuToggle.setAttribute("aria-expanded", String(isOpen));
 });
 
 navigation.querySelectorAll("a").forEach((link) => {
-  link.addEventListener("click", () => navigation.classList.remove("open"));
+  link.addEventListener("click", closeMenu);
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") closeMenu();
+});
+
+document.addEventListener("click", (event) => {
+  if (!navigation.contains(event.target) && !menuToggle.contains(event.target)) {
+    closeMenu();
+  }
+});
+
+window.matchMedia("(min-width: 781px)").addEventListener("change", (event) => {
+  if (event.matches) closeMenu();
 });
 
 // Membuat objek 3D pastel dengan Three.js
